@@ -31,8 +31,4 @@ This project demonstrates an **Autonomous Learning Agent** that:
 
 ---
 
-
-## ▶️ How to Run
-```bash
-pip install -r requirements.txt
-python src.py
+thon src.py
