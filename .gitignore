@@ -1,0 +1,23 @@
+# Environment variables
+.env
+
+# Vector DB persistence
+chroma_langchain_db/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Local / experimental data
+.langgraph_api/
+
+# IDE
+.vscode/
