@@ -23,7 +23,6 @@ from langchain_community.embeddings import FakeEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
-# -------------------- LLM --------------------
 llm = ChatGoogleGenerativeAI(
     model="models/gemini-flash-latest",
     temperature=0,
@@ -32,14 +31,12 @@ llm = ChatGoogleGenerativeAI(
 )
 
 
-# -------------------- MEMORY --------------------
 memory = ConversationBufferMemory(
     memory_key="chat_history",
     return_messages=True
 )
 
 
-# -------------------- WEB SEARCH --------------------
 tavily_client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 
 def web_search_tool(query: str) -> str:
@@ -51,8 +48,6 @@ def web_search_tool(query: str) -> str:
     except:
         return ""
 
-
-# -------------------- PDF → KNOWLEDGE BASE --------------------
 def build_pdf_kb(pdf_path: str):
     loader = PyPDFLoader(pdf_path)
     docs = loader.load()
@@ -74,7 +69,6 @@ def kb_search_tool(query: str) -> str:
     return "\n".join(d.page_content for d in docs)[:1500]
 
 
-# -------------------- FINAL ANSWER TOOL --------------------
 def final_answer_tool(query: str) -> str:
     kb_context = kb_search_tool(query)
     web_context = web_search_tool(query)
@@ -93,7 +87,6 @@ Give a short and clear final answer.
     return llm.invoke(prompt).content
 
 
-# -------------------- TOOLS --------------------
 tools = [
     Tool("PDFKnowledgeBase", kb_search_tool, "Search PDF knowledge base"),
     Tool("WebSearch", web_search_tool, "Search live web"),
@@ -101,7 +94,6 @@ tools = [
 ]
 
 
-# -------------------- REACT PROMPT --------------------
 REACT_PROMPT = PromptTemplate.from_template(
 """
 You are an intelligent agent.
@@ -125,7 +117,6 @@ Question: {input}
 )
 
 
-# -------------------- CREATE AGENT --------------------
 react_agent = create_react_agent(
     llm=llm,
     tools=tools,
@@ -142,7 +133,6 @@ agent_executor = AgentExecutor(
 )
 
 
-# -------------------- RUN --------------------
 question = "Explain Feynman Pedagogy from the PDF"
 
 try:
