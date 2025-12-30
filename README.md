@@ -30,5 +30,3 @@ This project demonstrates an **Autonomous Learning Agent** that:
 - FakeEmbeddings
 
 ---
-
-thon src.py
