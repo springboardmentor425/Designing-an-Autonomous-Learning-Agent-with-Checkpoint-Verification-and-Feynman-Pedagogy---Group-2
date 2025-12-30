@@ -18,6 +18,7 @@ venv/
 
 # Local / experimental data
 .langgraph_api/
+test_agents/
 
 # IDE
 .vscode/
