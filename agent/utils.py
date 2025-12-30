@@ -78,4 +78,4 @@ def show_prompt(prompt_text: str, title: str = "Prompt", border_style: str = "bl
         title=f"[bold green]{title}[/bold green]",
         border_style=border_style,
         padding=(1, 2)
-    ))
+ ))
