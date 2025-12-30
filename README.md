@@ -13,7 +13,7 @@ The core innovation lies in the **Feynman Pedagogy Module**: when a learner fail
 
 ## 🛠️ Tech Stack
 * **Frameworks:** LangGraph, LangChain
-* **LLM:** Google Gemini 1.5 Flash
+* **LLM:** Google gemini-flash-latest
 * **Vector Database:** ChromaDB (for RAG)
 * **Search Tool:** Tavily API
 * **Language:** Python 3.11+
@@ -75,6 +75,3 @@ The core innovation lies in the **Feynman Pedagogy Module**: when a learner fail
     ```bash
     python LLM_Agent_Final.py
     ```
-
-## 📄 License
-This project is developed for educational and research purposes.
