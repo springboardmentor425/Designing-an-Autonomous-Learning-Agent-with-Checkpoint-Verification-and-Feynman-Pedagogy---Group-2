@@ -8,7 +8,6 @@ from langchain_core.messages import SystemMessage, HumanMessage, RemoveMessage
 
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
-from langgraph.checkpoint.memory import MemorySaver
 
 load_dotenv()
 
@@ -32,6 +31,7 @@ User: "What is a variable?" -> You: (Answer directly)
 
 As like the above example, whatever the user asks query don't give the answer blindly.
 Only when the user clarifies, provide the full answer.
+Note: if the user asks anything like what is what? then you don't need to clarrifiesanything you just gave the results to the user.(e.g. User: "What is Python?" -> You: answer directly)
 """
 
 def chatbot_node(state: State):
@@ -47,32 +47,4 @@ workflow.add_node("chatbot", chatbot_node)
 workflow.add_edge(START, "chatbot")
 workflow.add_edge("chatbot", END)
 
-memory = MemorySaver()
-
-app = workflow.compile(checkpointer=memory)
-
-def run_chat():
-    config = {"configurable": {"thread_id": "session_graph_1"}}
-    
-    print("--- LangGraph Clarification Agent (Explicit) ---")
-    print("Type 'quit' to exit.\n")
-    
-    while True:
-        user_input = input("You: ")
-        if user_input.lower() in ["quit", "exit"]:
-            break
-            
-        events = app.stream(
-            {"messages": [HumanMessage(content=user_input)]}, 
-            config, 
-            stream_mode="values"
-        )
-        
-        for event in events:
-            if "messages" in event:
-                last_msg = event["messages"][-1]
-                if last_msg.type == "ai":
-                    print(f"Agent: {last_msg.content}")
-
-if __name__ == "__main__":
-    run_chat()
+app = workflow.compile()
