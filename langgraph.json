@@ -9,9 +9,10 @@
   ],
   "graphs": {
     "learning_checkpoint_agent": {
-      "path": "my_agent.agent:build_graph",
+      "path": "src.autonomous_learning_agent.scoping.scope_agent:build_graph",
       "description": "Creates structured learning checkpoints from web context",
-      "input_schema": "my_agent.utils.state:InputState"
+      "input_schema": "src.autonomous_learning_agent.scoping.scope_state:AgentInputState"
+
     }
   },
   "env":"./.env"
