@@ -1,0 +1,19 @@
+{
+  "dependencies": [
+        "langgraph",
+        "langchain-core",
+        "langchain-google-genai",
+        "tavily-python",
+        "typing-extensions",
+        "python-dotenv"
+  ],
+  "graphs": {
+    "learning_checkpoint_agent": {
+      "path": "agent:build_graph",
+      "description": "Creates structured learning checkpoints from web context",
+      "input_schema": "src.autonomous_learning_agent.scoping.scope_state:AgentInputState"
+
+    }
+  },
+  "env":"./.env"
+}
