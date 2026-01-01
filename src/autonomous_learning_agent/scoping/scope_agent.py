@@ -2,10 +2,10 @@ from datetime import datetime
 from typing_extensions import Literal
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, AIMessage, get_buffer_string
-from langgraph.graph import StateGraph, START,END
+from langgraph.graph import END
 from langgraph.types import Command
 from autonomous_learning_agent.prompts import clarify_with_user_instructions, transform_messages_into_research_topic_prompt
-from autonomous_learning_agent.scoping.scope_agent import AgentInputState, AgentState, ClarifyWithUser, ResearchQuestion
+from autonomous_learning_agent.scoping.scope_state import AgentInputState, AgentState, ClarifyWithUser, ResearchQuestion
 
 
 def get_today_str() -> str:
@@ -70,14 +70,3 @@ def write_research_brief(state: AgentState):
         "research_brief": response.research_brief,
         "supervisor_messages": [HumanMessage(content=f"{response.research_brief}.")]
     }
-    
-
-def build_graph():
-    builder = StateGraph(AgentState,input_schema=AgentInputState)
-    builder.add_node("clarify_with_user",clarify_with_user)
-    builder.add_node("write_research_brief",write_research_brief)
-
-    builder.add_edge(START,"clarify_with_user")
-    builder.add_edge("write_research_brief",END)
- 
-    return builder.compile()
