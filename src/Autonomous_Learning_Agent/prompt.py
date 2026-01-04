@@ -1,3 +1,4 @@
+
 """Prompt templates for the deep research system.
 
 This module contains all prompt templates used across the research workflow components,
@@ -40,13 +41,9 @@ If you do not need to ask a clarifying question, return:
 For the verification message when no clarification is needed:
 - Acknowledge that you have sufficient information to proceed
 - Briefly summarize the key aspects of what you understand from their request
-- Confirm that you will now begin the research process
+- Confirm hat you will now begin the research process
 - Keep the message concise and professional
 """
-
-
-
-
 
 transform_messages_into_research_topic_prompt = """You will be given a set of messages that have been exchanged so far between yourself and the user. 
 Your job is to translate these messages into a more detailed and concrete research question that will be used to guide the research.
@@ -89,4 +86,5 @@ Guidelines:
 - For academic or scientific queries, prefer linking directly to the original paper or official journal publication rather than survey papers or secondary summaries.
 - For people, try linking directly to their LinkedIn profile, or their personal website if they have one.
 - If the query is in a specific language, prioritize sources published in that language.
+
 """
