@@ -3,9 +3,11 @@ from email import message
 from urllib import response
 from langchain_core import messages
 from typing_extensions import Literal
+from typing_extensions import TypedDict, Optional, List
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage,AIMessage,get_buffer_string
 from langgraph.graph import StateGraph,START,END
+from Autonomous_Learning_Agent.state_scope import AgentState,AgentInputState,ClarifyWithUser,ResearchQuestion
 from langgraph.types import Command
 from Autonomous_Learning_Agent.prompt import clarify_with_user_instructions,transform_messages_into_research_topic_prompt
 
