@@ -1,0 +1,7 @@
+dotenv
+rich
+langchain_core
+langgraph
+pydantic
+langchain
+langchain-google-genai
