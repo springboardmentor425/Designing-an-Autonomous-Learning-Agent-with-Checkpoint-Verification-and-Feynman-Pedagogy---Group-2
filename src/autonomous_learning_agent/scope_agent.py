@@ -1,16 +1,14 @@
-from datetime import datetime
 from typing_extensions import Literal
 from langchain.chat_models import init_chat_model
-from langchain_core.messages import HumanMessage, AIMessage, get_buffer_string
+from langchain_core.messages import HumanMessage, AIMessage, get_buffer_string, SystemMessage
 from langgraph.graph import END
 from langgraph.types import Command
-from autonomous_learning_agent.prompts import clarify_with_user_instructions, transform_messages_into_research_topic_prompt
-from autonomous_learning_agent.scoping.scope_state import AgentInputState, AgentState, ClarifyWithUser, ResearchQuestion
+from autonomous_learning_agent.prompts import clarify_with_user_instructions, transform_messages_into_research_topic_prompt, supervisor_system_prompt
+from autonomous_learning_agent.state import ClarifyWithUser, ResearchQuestion
+from autonomous_learning_agent.state import AgentState
+from utils import get_today_str
 
 
-def get_today_str() -> str:
-    """Get current date in human readable format"""
-    return datetime.now().strftime("%a %b %#d,%Y")
 
 
 # LLM model
@@ -68,5 +66,7 @@ def write_research_brief(state: AgentState):
     # Update state with generated research brief and pass it to the supervisor
     return {
         "research_brief": response.research_brief,
-        "supervisor_messages": [HumanMessage(content=f"{response.research_brief}.")]
+        "supervisor_messages": [
+            SystemMessage(content=supervisor_system_prompt), 
+            HumanMessage(content=f"{response.research_brief}.")]
     }

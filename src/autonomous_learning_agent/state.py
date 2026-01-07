@@ -7,7 +7,6 @@ from langgraph.graph.message import add_messages
 from pydantic import BaseModel,Field
 
 
-
 class AgentInputState(MessagesState):
     """Input state for the full agent - only contains messages from user input."""
     pass
@@ -22,12 +21,12 @@ class AgentState(MessagesState):
     """
     research_brief:Optional[str]
     supervisor_messages:Annotated[Sequence[BaseMessage],add_messages]
+    structured_research_brief: Optional[str]
     raw_notes:Annotated[list[str],operator.add]=[]
     notes:Annotated[list[str],operator.add]=[]
     final_report:str
 
 
-# structured output schema
 class ClarifyWithUser(BaseModel):
     """Schema for user clarification decision and questions."""
     
@@ -47,6 +46,12 @@ class ResearchQuestion(BaseModel):
     research_brief:str=Field(
         description="A research qustion that will be used to guide the research"
     )
+   
+class SupervisorState(MessagesState):
+    """State for the supervisor that manages research tasks."""
     
-    
-    
+    supervisor_messages: Annotated[Sequence[BaseMessage],add_messages]
+    research_brief: str
+    notes: Annotated[list[str], operator.add] = []
+    research_iterations: int = 0
+    raw_notes: Annotated[List[str], operator.add]
