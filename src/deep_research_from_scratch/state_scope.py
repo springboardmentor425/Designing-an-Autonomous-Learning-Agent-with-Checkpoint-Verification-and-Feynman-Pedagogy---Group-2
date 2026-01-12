@@ -51,6 +51,7 @@ class ClarifyWithUser(BaseModel):
         description="A question to ask the user to clarify the report scope",
     )
     verification: str = Field(
+        default="",
         description="Verify message that we will start research after the user has provided the necessary information.",
     )
 
