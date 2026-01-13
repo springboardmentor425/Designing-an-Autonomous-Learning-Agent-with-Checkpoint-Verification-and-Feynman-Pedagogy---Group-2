@@ -1,24 +1,9 @@
-# Environment variables
 .env
-
-# Vector DB persistence
-chroma_langchain_db/
-
-# Python cache
-__pycache__/
-*.pyc
-
-# OS files
-.DS_Store
-
-# Virtual environments
-env/
-venv/
-.venv/
-
-# Local / experimental data
+__pycache__
+.ipynb_checkpoints
 .langgraph_api/
-test_agents/
-
-# IDE
-.vscode/
+deep_research_from_scratch.egg-info/
+*.pyc
+.venv/
+venv/
+env/
