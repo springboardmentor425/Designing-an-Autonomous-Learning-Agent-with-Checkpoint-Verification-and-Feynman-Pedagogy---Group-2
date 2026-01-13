@@ -15,6 +15,7 @@ from langchain.chat_models import init_chat_model
 from deep_research_from_scratch.state_research import ResearcherState, ResearcherOutputState
 from deep_research_from_scratch.utils import tavily_search, get_today_str, think_tool
 from deep_research_from_scratch.prompts import research_agent_prompt, compress_research_system_prompt, compress_research_human_message
+from deep_research_from_scratch.rate_limiter import with_retry
 
 # ===== CONFIGURATION =====
 
@@ -22,14 +23,15 @@ from deep_research_from_scratch.prompts import research_agent_prompt, compress_r
 tools = [tavily_search, think_tool]
 tools_by_name = {tool.name: tool for tool in tools}
 
-# Initialize models
-model = init_chat_model("google_genai:models/gemini-flash-latest")
+# Initialize models - Using Groq for higher rate limits and tool calling support
+model = init_chat_model("groq:llama-3.3-70b-versatile")
 model_with_tools = model.bind_tools(tools)
-summarization_model = init_chat_model("google_genai:models/gemini-flash-latest")
-compress_model = init_chat_model("google_genai:models/gemini-flash-latest") # model="anthropic:claude-sonnet-4-20250514", max_tokens=64000
+summarization_model = init_chat_model("groq:llama-3.3-70b-versatile")
+compress_model = init_chat_model("groq:llama-3.3-70b-versatile")
 
 # ===== AGENT NODES =====
 
+@with_retry(max_retries=3, base_delay=5.0)
 def llm_call(state: ResearcherState):
     """Analyze current state and decide on next actions.
 
@@ -72,6 +74,7 @@ def tool_node(state: ResearcherState):
 
     return {"researcher_messages": tool_outputs}
 
+@with_retry(max_retries=3, base_delay=5.0)
 def compress_research(state: ResearcherState) -> dict:
     """Compress research findings into a concise summary.
 

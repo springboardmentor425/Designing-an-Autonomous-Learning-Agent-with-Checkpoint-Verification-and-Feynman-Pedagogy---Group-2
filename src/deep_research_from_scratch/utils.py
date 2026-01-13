@@ -17,6 +17,12 @@ from tavily import TavilyClient
 
 from deep_research_from_scratch.state_research import Summary
 from deep_research_from_scratch.prompts import summarize_webpage_prompt
+from deep_research_from_scratch.rate_limiter import with_retry
+
+# ===== CONFIGURATION FLAGS =====
+# Set to True to skip LLM-based summarization and save API calls
+# When True, uses raw Tavily content directly (still useful, just not summarized)
+SKIP_SUMMARIZATION = True  # OPTIMIZED: Set to True to save API quota
 
 # ===== UTILITY FUNCTIONS =====
 
@@ -43,7 +49,7 @@ def get_current_dir() -> Path:
 
 # ===== CONFIGURATION =====
 
-summarization_model = init_chat_model("google_genai:models/gemini-flash-latest")
+summarization_model = init_chat_model("groq:llama-3.3-70b-versatile")
 tavily_client = TavilyClient()
 
 # ===== SEARCH FUNCTIONS =====
@@ -79,6 +85,7 @@ def tavily_search_multiple(
 
     return search_docs
 
+@with_retry(max_retries=3, base_delay=5.0)
 def summarize_webpage_content(webpage_content: str) -> str:
     """Summarize webpage content using the configured summarization model.
 
@@ -88,6 +95,12 @@ def summarize_webpage_content(webpage_content: str) -> str:
     Returns:
         Formatted summary with key excerpts
     """
+    # OPTIMIZATION: Skip LLM summarization if configured
+    if SKIP_SUMMARIZATION:
+        # Return truncated raw content instead of calling LLM
+        truncated = webpage_content[:2000] if len(webpage_content) > 2000 else webpage_content
+        return f"<content>\n{truncated}\n</content>"
+    
     try:
         # Set up structured output model for summarization
         structured_model = summarization_model.with_structured_output(Summary)

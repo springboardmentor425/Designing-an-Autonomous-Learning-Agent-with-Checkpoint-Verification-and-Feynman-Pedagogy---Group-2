@@ -13,7 +13,7 @@ def get_today_str() -> str:
     """Get current date in human readable format"""
     return datetime.now().strftime("%a %b %#d,%Y")
 
-model=init_chat_model("google_genai:models/gemini-flash-lite-latest")
+model=init_chat_model("groq:llama-3.3-70b-versatile")
 
 def clarify_with_user(state: AgentState) -> Command[Literal["write_research_brief", "__end__"]]:
     """
