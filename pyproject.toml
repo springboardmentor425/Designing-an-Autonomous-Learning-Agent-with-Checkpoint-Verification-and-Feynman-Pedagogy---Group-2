@@ -18,6 +18,7 @@ dependencies = [
     "ipykernel>=6.20.0",
     "tavily-python>=0.5.0",
     "pandas>=2.3.3",
+    "langgraph-cli[inmem]>=0.4.11",
 ]
 
 [project.optional-dependencies]

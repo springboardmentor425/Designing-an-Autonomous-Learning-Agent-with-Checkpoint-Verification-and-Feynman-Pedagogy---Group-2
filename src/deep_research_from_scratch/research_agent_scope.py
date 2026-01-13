@@ -11,12 +11,14 @@ whether sufficient context exists to proceed with research.
 
 from datetime import datetime
 from typing_extensions import Literal
+import os
+import requests
 
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, AIMessage, get_buffer_string
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Command
-
+from langchain_ollama import ChatOllama
 from deep_research_from_scratch.prompts import clarify_with_user_instructions, transform_messages_into_research_topic_prompt
 from deep_research_from_scratch.state_scope import AgentState, ClarifyWithUser, ResearchQuestion, AgentInputState
 
@@ -32,7 +34,20 @@ def get_today_str() -> str:
 # ===== CONFIGURATION =====
 
 # Initialize model
-model = init_chat_model("google_genai:models/gemini-flash-latest")
+# model = init_chat_model("google_genai:models/gemini-flash-latest")
+
+# Initialize Granite 2B
+model_path = "ibm-granite/granite3.2:2b"
+try: # Look for a locally accessible Ollama server for the model
+    response = requests.get(os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434"))
+    model = ChatOllama(
+        model="ibm/granite3.2:2b",
+        num_ctx=65536, # 64K context window
+        num_predict=2000, # Set the maximum number of tokens to generate as output.
+        temperature=0.0,
+    )
+except Exception: # Use Replicate for the model
+    print("Error in model")
 
 # ===== WORKFLOW NODES =====
 
@@ -65,6 +80,7 @@ def clarify_with_user(state: AgentState) -> Command[Literal["write_research_brie
             goto="write_research_brief", 
             update={"messages": [AIMessage(content=response.verification)]}
         )
+
 
 def write_research_brief(state: AgentState):
     """

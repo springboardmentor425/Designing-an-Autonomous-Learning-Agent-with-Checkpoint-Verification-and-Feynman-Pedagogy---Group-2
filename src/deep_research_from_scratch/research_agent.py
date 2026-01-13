@@ -15,7 +15,9 @@ from langchain.chat_models import init_chat_model
 from deep_research_from_scratch.state_research import ResearcherState, ResearcherOutputState
 from deep_research_from_scratch.utils import tavily_search, get_today_str, think_tool
 from deep_research_from_scratch.prompts import research_agent_prompt, compress_research_system_prompt, compress_research_human_message
-
+import os
+import requests
+from langchain_ollama import ChatOllama
 # ===== CONFIGURATION =====
 
 # Set up tools and model binding
@@ -25,9 +27,26 @@ tools_by_name = {tool.name: tool for tool in tools}
 # Initialize models
 model = init_chat_model("google_genai:models/gemini-flash-latest")
 model_with_tools = model.bind_tools(tools)
-summarization_model = init_chat_model("google_genai:models/gemini-flash-latest")
-compress_model = init_chat_model("google_genai:models/gemini-flash-latest") # model="anthropic:claude-sonnet-4-20250514", max_tokens=64000
 
+
+summarization_model = init_chat_model("google_genai:models/gemini-flash-latest")
+
+
+# Initialize Granite 2B
+model_path = "ibm/granite3.2:2b"
+try: # Look for a locally accessible Ollama server for the model
+    response = requests.get(os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434"))
+    compress_model = ChatOllama(
+        model=model_path,
+        num_ctx=65536, # 64K context window
+        num_predict=2000, # Set the maximum number of tokens to generate as output.
+        temperature=0.0,
+    )
+except Exception: # Use Replicate for the model
+    compress_model = init_chat_model("google_genai:models/gemini-flash-latest")
+
+    
+    
 # ===== AGENT NODES =====
 
 def llm_call(state: ResearcherState):
