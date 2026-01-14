@@ -34,20 +34,7 @@ def get_today_str() -> str:
 # ===== CONFIGURATION =====
 
 # Initialize model
-# model = init_chat_model("google_genai:models/gemini-flash-latest")
-
-# Initialize Granite 2B
-model_path = "ibm-granite/granite3.2:2b"
-try: # Look for a locally accessible Ollama server for the model
-    response = requests.get(os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434"))
-    model = ChatOllama(
-        model="ibm/granite3.2:2b",
-        num_ctx=65536, # 64K context window
-        num_predict=2000, # Set the maximum number of tokens to generate as output.
-        temperature=0.0,
-    )
-except Exception: # Use Replicate for the model
-    print("Error in model")
+model = init_chat_model("google_genai:models/gemini-flash-latest")
 
 # ===== WORKFLOW NODES =====
 

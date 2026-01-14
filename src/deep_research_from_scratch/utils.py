@@ -4,7 +4,9 @@
 This module provides search and content processing utilities for the research agent,
 including web search capabilities and content summarization tools.
 """
-
+import os
+import requests
+from langchain_ollama import ChatOllama
 from pathlib import Path
 from datetime import datetime
 from typing_extensions import Annotated, List, Literal
@@ -41,9 +43,13 @@ def get_current_dir() -> Path:
     except NameError:  # __file__ is not defined
         return Path.cwd()
 
+
+
 # ===== CONFIGURATION =====
 
-summarization_model = init_chat_model("google_genai:models/gemini-flash-latest")
+# summarization_model = init_chat_model("google_genai:models/gemini-flash-latest")
+summarization_model = ChatOllama(model="ibm/granite3.2:2b")
+
 tavily_client = TavilyClient()
 
 # ===== SEARCH FUNCTIONS =====
@@ -79,6 +85,8 @@ def tavily_search_multiple(
 
     return search_docs
 
+
+
 def summarize_webpage_content(webpage_content: str) -> str:
     """Summarize webpage content using the configured summarization model.
 
@@ -112,6 +120,8 @@ def summarize_webpage_content(webpage_content: str) -> str:
         print(f"Failed to summarize webpage: {str(e)}")
         return webpage_content[:1000] + "..." if len(webpage_content) > 1000 else webpage_content
 
+
+
 def deduplicate_search_results(search_results: List[dict]) -> dict:
     """Deduplicate search results by URL to avoid processing duplicate content.
 
@@ -130,6 +140,8 @@ def deduplicate_search_results(search_results: List[dict]) -> dict:
                 unique_results[url] = result
 
     return unique_results
+
+
 
 def process_search_results(unique_results: dict) -> dict:
     """Process search results by summarizing content where available.

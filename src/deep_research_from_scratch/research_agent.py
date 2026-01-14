@@ -26,25 +26,12 @@ tools_by_name = {tool.name: tool for tool in tools}
 
 # Initialize models
 model = init_chat_model("google_genai:models/gemini-flash-latest")
+# model =  ChatOllama(model="ibm/granite3.2:2b")
 model_with_tools = model.bind_tools(tools)
 
 
-summarization_model = init_chat_model("google_genai:models/gemini-flash-latest")
-
-
-# Initialize Granite 2B
-model_path = "ibm/granite3.2:2b"
-try: # Look for a locally accessible Ollama server for the model
-    response = requests.get(os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434"))
-    compress_model = ChatOllama(
-        model=model_path,
-        num_ctx=65536, # 64K context window
-        num_predict=2000, # Set the maximum number of tokens to generate as output.
-        temperature=0.0,
-    )
-except Exception: # Use Replicate for the model
-    compress_model = init_chat_model("google_genai:models/gemini-flash-latest")
-
+# compress_model = init_chat_model("google_genai:models/gemini-flash-latest")
+compress_model = ChatOllama(model="ibm/granite3.2:2b")
     
     
 # ===== AGENT NODES =====
